@@ -6,12 +6,21 @@ var numOfTodos = document.getElementById('number-of-todos')
 
 function renderTodos() {
   todoList.innerHTML = todos.map(function(todo, index) {
-    return '<li>' +
+    var string ='<li>' +
       todo +
-      ' <button class="remove-todo" data-index="' + index + '">X</button>' +
-      ' <button class="move-todo-up" data-index="' + index + '">&#8593</button>' +
-      ' <button class="move-todo-down" data-index="' + index + '">&#8595</button>' +
+      ' <button class="remove-todo" data-index="' + index + '">X</button>'
+    if (index === 0){
+      string += ' <button class="move-todo-down" data-index="' + index + '">&#8595</button>' +
     '</li>'
+    } else if (index === todos.length - 1) {
+      string +=  ' <button class="move-todo-up" data-index="' + index + '">&#8593</button>' +
+      '</li>'
+    } else {
+      string += ' <button class="move-todo-up" data-index="' + index + '">&#8593</button>' +
+      ' <button class="move-todo-down" data-index="' + index + '">&#8595</button>' +
+      '</li>'
+    }
+    return string
   }).join('')
 }
 
@@ -20,16 +29,18 @@ function numberOfTodos(){
 }
 numberOfTodos()
 
-Array.prototype.move = function (old_index, new_index) {
-    while (old_index < 0) {
-        old_index += this.length;
-    }
-    while (new_index < 0) {
-        new_index += this.length;
-    }
+function clearAll(){
+  todos = []
+  renderTodos()
+  numberOfTodos()
+}
 
-    this.splice(new_index, 0, this.splice(old_index, 1)[0]);
-};
+function randomTodo(){
+  var rand = todos[Math.floor(Math.random()*todos.length)]
+  alert(rand)
+  renderTodos()
+  numberOfTodos()
+}
 
 newTodoInput.onkeypress = function(event) {
   if (event.which === 13) {
@@ -45,22 +56,16 @@ todoList.onclick = function(event) {
   var idx = clickedElement.dataset.index
   if (clickedElement.className === 'remove-todo') {
     todos.splice(idx, 1)
-    renderTodos()
-    numberOfTodos()
   } else if (clickedElement.className === 'move-todo-up') {
-    todos.move(idx, idx-1)
+    var temp = todos[idx]
+    todos[idx] = todos[idx - 1]
+    todos[idx -1] = temp
   } else if (clickedElement.className === 'move-todo-down') {
-    todos.move(idx-todos.length, idx-todos.length+1)
-  }
-}
-
-document.body.onclick = function(event){
-  var clickedElement = event.target
-  if (clickedElement.className === 'clear-all'){
-    todos = []
-  } else if (clickedElement.className ==='random-todo') {
-    var rand = todos[Math.floor(Math.random()*todos.length)]
-    alert(rand)
+    todos = todos.reverse()
+    var temp = todos[idx]
+    todos[idx] = todos[idx - 1]
+    todos[idx - 1] = temp
+    todos = todos.reverse()
   }
   renderTodos()
   numberOfTodos()
