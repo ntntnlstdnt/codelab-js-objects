@@ -24,30 +24,34 @@ function renderTodos() {
   }).join('')
 }
 
-function numberOfTodos(){
+function renderNumberOfTodos(){
   numOfTodos.innerHTML = todos.length
 }
-numberOfTodos()
+
 
 function clearAll(){
   todos = []
+  renderAll()
+}
+
+function renderAll(){
   renderTodos()
-  numberOfTodos()
+  renderNumberOfTodos()
 }
 
 function randomTodo(){
   var rand = todos[Math.floor(Math.random()*todos.length)]
   alert(rand)
-  renderTodos()
-  numberOfTodos()
+  renderAll()
 }
+
+renderAll()
 
 newTodoInput.onkeypress = function(event) {
   if (event.which === 13) {
     todos.push(this.value)
     this.value = ''
-    renderTodos()
-    numberOfTodos()
+    renderAll()
   }
 }
 
@@ -61,12 +65,9 @@ todoList.onclick = function(event) {
     todos[idx] = todos[idx - 1]
     todos[idx -1] = temp
   } else if (clickedElement.className === 'move-todo-down') {
-    todos = todos.reverse()
     var temp = todos[idx]
-    todos[idx] = todos[idx - 1]
-    todos[idx - 1] = temp
-    todos = todos.reverse()
+    todos[idx] = todos[idx - (-1)]
+    todos[idx - (-1)] = temp
   }
-  renderTodos()
-  numberOfTodos()
+  renderAll()
 }
