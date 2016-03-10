@@ -8,7 +8,8 @@ var todos = []
 var newTodoInput = document.getElementById('new-todo-input')
 var todoList = document.getElementById('todo-list')
 var numOfTodos = document.getElementById('number-of-todos')
-var clickChkBox = 0
+var title = document.querySelector("#new-todo-input input[name=title]")
+var description = document.querySelector("#new-todo-input input[name=description]")
 
 function renderTodos() {
   todoList.innerHTML = todos.map(function(todo, index) {
@@ -41,39 +42,39 @@ function clearAll(){
   renderAll()
 }
 
-function clearCompleted(){
-
-}
-
 function renderAll(){
   renderTodos()
   renderNumberOfTodos()
+  title.value = ''
+  description.value = ''
+  title.focus()
 }
 
 function randomTodo(){
-  var rand = todos[Math.floor(Math.random()*todos.length)]
+  var rand = todos[Math.floor(Math.random()*todos.length)].title
   alert(rand)
   renderAll()
 }
 
-function uncheck() {
-    document.getElementsByClassName("checkbox").checked = false;
+function isNotChecked(obj) {
+    return !obj.isComplete
+}
+
+function clearChecked() {
+    todos = todos.filter(isNotChecked)
     renderAll()
 }
 
-renderAll()
 
-document.getElementById('new-todo-input').onsubmit = function(event) {
+newTodoInput.onsubmit = function(event) {
   event.preventDefault()
-   var title = document.querySelector("#new-todo-input input[name=title]").value
-   var description = document.querySelector("#new-todo-input input[name=description]").value
-   todos.push({
-     title: title,
-     description: description,
+     todos.push({
+     title: title.value,
+     description: description.value,
      isComplete: false
    })
    renderAll()
-}
+ }
 
 todoList.onclick = function(event) {
   var clickedElement = event.target
@@ -92,6 +93,6 @@ todoList.onclick = function(event) {
     todos[idx - (-1)] = temp
     renderAll()
   } else if (clickedElement.type ==='checkbox') {
-    clickedElement.checked
+    todos[idx].isComplete = clickedElement.checked
   }
 }
